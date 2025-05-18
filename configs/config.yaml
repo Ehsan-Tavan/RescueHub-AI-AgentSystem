@@ -1,0 +1,10 @@
+generative_model:
+  name:
+    # Name of the generative model to be used for text processing
+  temperature:
+    # Controls the randomness of the model's output (0 for deterministic, higher for more creative)
+    0
+  api_key:
+    # API key for authenticating requests to the model's API
+  base_url:
+    # Base URL for the API endpoint of the generative model
