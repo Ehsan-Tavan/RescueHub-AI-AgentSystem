@@ -1,0 +1,18 @@
+import argparse
+import yaml
+
+
+if __name__ == "__main__":
+    PARSER = argparse.ArgumentParser(
+        description='Ocr Wrapper'
+    )
+    PARSER.add_argument("-c", "--config", default=None, type=str,
+                        help="Config file path (default: None)")
+
+    ARGS = PARSER.parse_args()
+
+    if ARGS.config is None:
+        raise ValueError("The config argument should be set!")
+
+    CONFIG = yaml.safe_load(open(ARGS.config))
+    print(CONFIG)
