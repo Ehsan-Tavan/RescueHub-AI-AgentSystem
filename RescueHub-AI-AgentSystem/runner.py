@@ -6,7 +6,7 @@ from utils import setup_logger
 if __name__ == "__main__":
     LOGGER = setup_logger()
     PARSER = argparse.ArgumentParser(
-        description='Ocr Wrapper'
+        description="RescueHub-AI-AgentSystem"
     )
     PARSER.add_argument("-c", "--config", default=None, type=str,
                         help="Config file path (default: None)")
