@@ -1,8 +1,10 @@
 import argparse
 import yaml
 
+from utils import setup_logger
 
 if __name__ == "__main__":
+    LOGGER = setup_logger()
     PARSER = argparse.ArgumentParser(
         description='Ocr Wrapper'
     )
@@ -15,4 +17,4 @@ if __name__ == "__main__":
         raise ValueError("The config argument should be set!")
 
     CONFIG = yaml.safe_load(open(ARGS.config))
-    print(CONFIG)
+    LOGGER.info(CONFIG)
