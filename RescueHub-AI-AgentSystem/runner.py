@@ -2,6 +2,7 @@ import argparse
 import yaml
 
 from utils import setup_logger
+from agents import create_fire_emergency_agent
 
 if __name__ == "__main__":
     LOGGER = setup_logger()
@@ -18,3 +19,8 @@ if __name__ == "__main__":
 
     CONFIG = yaml.safe_load(open(ARGS.config))
     LOGGER.info(CONFIG)
+    FIRE_AGENT = create_fire_emergency_agent(model_config=CONFIG["generative_model"])
+    RESPONSE = FIRE_AGENT.invoke({
+    "query": "سلام! چطور میتونم کمک کنم؟"
+    })
+    print(RESPONSE)
