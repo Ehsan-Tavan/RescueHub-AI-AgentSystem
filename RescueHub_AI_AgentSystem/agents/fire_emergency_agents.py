@@ -3,7 +3,7 @@ import logging
 from typing import Dict
 
 from .state import State
-from RescueHub_AI_AgentSystem.nodes import get_conversation_node
+from RescueHub_AI_AgentSystem.nodes import get_conversation_node, get_history_node
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +14,18 @@ def create_fire_emergency_agent(model_config: Dict[str, str]):
     # Initialize graph
     workflow = StateGraph(State)
 
-    # Add conversation node
-    logger.info("Adding conversation node.")
-    workflow.add_node("conversation", get_conversation_node(model_config))
+    # Get nodes
+    conversation_node = get_conversation_node(model_config)
+    history_node = get_history_node()
 
-    # Set direct path
+    # Add nodes to workflow
+    workflow.add_node("conversation", conversation_node)
+    workflow.add_node("history", history_node)
+
+    # Set edges
     workflow.set_entry_point("conversation")
-    workflow.add_edge("conversation", END)
+    workflow.add_edge("conversation", "history")
+    workflow.add_edge("history", END)
 
     # Compile
     app = workflow.compile(debug=False)

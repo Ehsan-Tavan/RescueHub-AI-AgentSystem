@@ -17,11 +17,13 @@ class ConversationNode:
             "message": "The LLM is generating conversation response",
             "state": state
         })
-        return {
-            "answer": self.runnable.invoke({
-                "question": state["query"],
-            })
-        }
+
+        response = self.runnable.invoke({
+            "history": state.get("chat_history", []),
+            "question": state["query"]
+        })
+
+        return {"answer": response.content}
 
 
 def get_conversation_node(
