@@ -4,7 +4,7 @@ from datetime import datetime
 from pythonjsonlogger import jsonlogger
 
 
-def setup_logger(log_dir: str = "../logs", log_level: int = logging.INFO, logger_name: str = "RescueHub-AI-AgentSystem"):
+def setup_logger(log_dir: str = "../logs", log_level: int = logging.DEBUG, logger_name: str = "RescueHub_AI_AgentSystem"):
     """
     Create a logger that outputs to both the console and a timestamped file using JSON formatting.
 

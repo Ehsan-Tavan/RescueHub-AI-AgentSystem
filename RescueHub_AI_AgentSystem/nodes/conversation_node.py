@@ -1,11 +1,12 @@
 from typing import Dict
 import logging
 
-from prompts import get_conversation_node_prompt
-from agents import State
+from RescueHub_AI_AgentSystem.prompts import get_conversation_node_prompt
+from RescueHub_AI_AgentSystem.agents import State
 from .load_generative_model import load_generative_model
 
 logger = logging.getLogger(__name__)
+
 
 class ConversationNode:
     def __init__(self, llm_chain):

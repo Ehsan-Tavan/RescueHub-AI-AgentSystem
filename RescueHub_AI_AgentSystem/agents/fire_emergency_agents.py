@@ -3,7 +3,7 @@ import logging
 from typing import Dict
 
 from .state import State
-from nodes import get_conversation_node
+from RescueHub_AI_AgentSystem.nodes import get_conversation_node
 
 logger = logging.getLogger(__name__)
 
