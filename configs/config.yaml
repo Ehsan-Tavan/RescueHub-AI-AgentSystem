@@ -1,0 +1,13 @@
+generative_model:
+  name:
+    # Name of the generative model to be used for text processing
+    gpt-4o-mini
+  temperature:
+    # Controls the randomness of the model's output (0 for deterministic, higher for more creative)
+    0
+  api_key:
+    # API key for authenticating requests to the model's API
+    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
+  base_url:
+    # Base URL for the API endpoint of the generative model
+    https://api.openai.com/v1
