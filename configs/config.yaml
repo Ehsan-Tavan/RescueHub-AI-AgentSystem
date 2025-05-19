@@ -7,7 +7,7 @@ generative_model:
     0
   api_key:
     # API key for authenticating requests to the model's API
-    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
+
   base_url:
     # Base URL for the API endpoint of the generative model
     https://api.openai.com/v1
