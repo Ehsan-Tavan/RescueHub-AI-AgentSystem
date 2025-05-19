@@ -8,14 +8,14 @@ from RescueHub_AI_AgentSystem.nodes import get_conversation_node, get_history_no
 logger = logging.getLogger(__name__)
 
 
-def create_fire_emergency_agent(model_config: Dict[str, str]):
-    logger.info("Creating fire emergency agent.")
+def create_medical_emergency_agent(model_config: Dict[str, str]):
+    logger.info("Creating medical emergency agent.")
 
     # Initialize graph
     workflow = StateGraph(State)
 
     # Get nodes
-    conversation_node = get_conversation_node(model_config, agent_name="fire_emergency_agent")
+    conversation_node = get_conversation_node(model_config, agent_name="medical_emergency_agent")
     history_node = get_history_node()
 
     # Add nodes to workflow

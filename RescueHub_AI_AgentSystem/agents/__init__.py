@@ -1,2 +1,3 @@
 from .state import State
 from .fire_emergency_agents import create_fire_emergency_agent
+from .medical_emergency_agent import create_medical_emergency_agent

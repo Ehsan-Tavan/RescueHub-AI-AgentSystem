@@ -1,7 +1,7 @@
 from typing import Dict
 import logging
 
-from RescueHub_AI_AgentSystem.prompts import get_conversation_node_prompt
+from RescueHub_AI_AgentSystem.prompts import get_fire_emergency_prompt, get_medical_emergency_prompt
 from RescueHub_AI_AgentSystem.agents import State
 from .load_generative_model import load_generative_model
 
@@ -28,10 +28,16 @@ class ConversationNode:
 
 def get_conversation_node(
         model_config: Dict[str, str],
+        agent_name: str
 ) -> ConversationNode:
     logger.info("Getting the conversation node")
 
-    conversation_prompt = get_conversation_node_prompt()
+    agent_name_2_prompt_function = {
+        "fire_emergency_agent": get_fire_emergency_prompt,
+        "medical_emergency_agent": get_medical_emergency_prompt,
+    }
+
+    conversation_prompt = agent_name_2_prompt_function[agent_name]()
 
     # Load the model
     model = load_generative_model(model_config)
