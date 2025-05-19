@@ -3,7 +3,7 @@ import yaml
 
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 from RescueHub_AI_AgentSystem.utils import setup_logger
-from RescueHub_AI_AgentSystem.agents import create_fire_emergency_agent
+from RescueHub_AI_AgentSystem.agents import create_router_agent
 
 if __name__ == "__main__":
     LOGGER = setup_logger()
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     LOGGER.debug(CONFIG)
 
     # Create the agent (LangGraph app)
-    FIRE_AGENT = create_fire_emergency_agent(model_config=CONFIG["generative_model"])
+    FIRE_AGENT = create_router_agent(model_config=CONFIG["generative_model"])
 
     # Initialize history
     history: list[BaseMessage] = []
@@ -40,6 +40,9 @@ if __name__ == "__main__":
 
         # Invoke the LangGraph app
         state = FIRE_AGENT.invoke(state)
+
+        print("state")
+        print(state)
 
         # Print and update history
         answer = state["answer"]
