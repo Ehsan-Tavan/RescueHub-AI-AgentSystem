@@ -26,8 +26,6 @@ class ConversationNode:
         })
 
         content = response.content.strip()
-        print("######  content  ######")
-        print(content)
         agent_name = None
 
         if "[[agent_name:" in content:

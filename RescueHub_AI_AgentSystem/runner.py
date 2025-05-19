@@ -41,9 +41,6 @@ if __name__ == "__main__":
         # Invoke the LangGraph app
         state = FIRE_AGENT.invoke(state)
 
-        print("state")
-        print(state)
-
         # Print and update history
         answer = state["answer"]
         print(f"🤖 Agent: {answer}\n")

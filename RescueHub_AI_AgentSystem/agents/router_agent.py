@@ -10,8 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 def route_by_agent(state: State) -> str:
-    print("state in route_by_agent")
-    print(state)
     if state.get("agent_name") == "fire_emergency_agent":
         return "fire"
     elif state.get("agent_name") == "medical_emergency_agent":
