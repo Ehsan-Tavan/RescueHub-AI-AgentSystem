@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
     while True:
         query = input("🧑 You: ")
-        if query.lower() in {"exit", "quit"}:
-            print("👋 Conversation ended.")
-            break
+        # if query.lower() in {"exit", "quit"}:
+        #     print("👋 Conversation ended.")
+        #     break
 
         # Build input state
         state = {
@@ -43,6 +43,10 @@ if __name__ == "__main__":
         # Invoke the LangGraph app
         state = FIRE_AGENT.invoke(state)
 
+        if query.lower() in {"exit", "quit"}:
+            print("👋 Conversation ended.")
+            break
+
         # Print and update history
         answer = state["answer"]
         agent_name = agent_names[-1] if agent_names else "router"
@@ -53,4 +57,3 @@ if __name__ == "__main__":
         history.append(HumanMessage(content=query))
         history.append(AIMessage(content=answer))
         agent_names.append(state["agent_name"][-1])
-

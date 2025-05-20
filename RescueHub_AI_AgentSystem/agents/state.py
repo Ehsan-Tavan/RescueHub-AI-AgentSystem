@@ -8,3 +8,4 @@ class State(TypedDict):
     answer: str
     chat_history: Annotated[List[BaseMessage], operator.add]
     agent_name: List[str]
+    summary: dict

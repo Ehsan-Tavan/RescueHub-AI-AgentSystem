@@ -1,12 +1,26 @@
+from typing import Dict
+import json
+import os
+from datetime import datetime
 from langgraph.graph import StateGraph, END
 import logging
-from typing import Dict
 
 from .state import State
-from RescueHub_AI_AgentSystem.nodes import get_conversation_node, get_history_node
+from RescueHub_AI_AgentSystem.nodes import get_conversation_node, get_history_node, get_exit_summary_node
 from RescueHub_AI_AgentSystem.agents import create_fire_emergency_agent, create_medical_emergency_agent
 
 logger = logging.getLogger(__name__)
+
+
+def is_exit_input(state: State) -> bool:
+    user_input = state.get("query", "").strip().lower()
+    return user_input in {"exit", "quit"}
+
+
+def route_from_router_conversation(state: State) -> str:
+    if is_exit_input(state):
+        return "summary_node"
+    return route_by_agent(state)
 
 
 def entry_router(state: State) -> dict:
@@ -38,17 +52,28 @@ def route_by_agent(state: State) -> str:
         return "router"
 
 
-# def check_agent_changing(state: State) -> str:
-#     detected_agents = state.get("agent_name", [])
-#     print("detected_agents")
-#     print(detected_agents)
-#     if len(detected_agents) <= 2:
-#         return "not_change"
-#     if detected_agents[-1] != detected_agents[-2]:
-#         print(detected_agents[-1])
-#         return detected_agents[-1]
-#     else:
-#         return "not_change"
+def mock_save_ticket_tool(state: State) -> dict:
+    summary = state.get("summary", {})
+    logger.info(f"[TICKET TOOL] Saving ticket with summary: {summary}")
+
+    # Create a timestamped filename
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"ticket_{timestamp}.json"
+    save_path = os.path.join("saved_tickets", filename)
+
+    # Ensure the output directory exists
+    os.makedirs("saved_tickets", exist_ok=True)
+
+    # Save the summary as a JSON file
+    with open(save_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+
+    ticket_id = f"TICKET_{timestamp}"
+
+    return {
+        "ticket_id": ticket_id,
+        "message": f"Ticket saved to {filename}"
+    }
 
 
 def create_router_agent(model_config: Dict[str, str]):
@@ -59,6 +84,7 @@ def create_router_agent(model_config: Dict[str, str]):
 
     # Get nodes
     conversation_node = get_conversation_node(model_config, agent_name="router_agent")
+    summary_node = get_exit_summary_node(model_config)
     history_node = get_history_node()
 
     fire_agent = create_fire_emergency_agent(model_config)
@@ -71,38 +97,31 @@ def create_router_agent(model_config: Dict[str, str]):
     workflow.add_node("router_history", history_node)
     workflow.add_node("fire_agent", fire_agent)
     workflow.add_node("medical_agent", medical_agent)
+    workflow.add_node("summary_node", summary_node)
+    workflow.add_node("save_ticket_tool", mock_save_ticket_tool)
 
-    workflow.add_conditional_edges("entry_router", route_by_agent, {
+    workflow.add_conditional_edges("entry_router", route_from_router_conversation, {
+        "summary_node": "summary_node",
         "router": "router_conversation",
         "fire": "fire_agent",
         "medical": "medical_agent"
     })
 
-    workflow.add_conditional_edges("router_conversation", route_by_agent, {
-        "router": "router_history",
-        "fire": "fire_agent",
-        "medical": "medical_agent"
-    })
-
-    # workflow.add_conditional_edges("fire_agent", check_agent_changing, {
-    #     "not_change": "end_point",
-    #     "fire_emergency_agent": "end_point",
-    #     "medical_emergency_agent": "medical_agent"
-    # })
-    #
-    # workflow.add_conditional_edges("medical_agent", check_agent_changing, {
-    #     "not_change": "end_point",
-    #     "fire_emergency_agent": "fire_agent",
-    #     "medical_emergency_agent": "end_point"
-    # })
-
     workflow.set_entry_point("entry_router")
-    # workflow.add_edge("router_conversation", "router_history")
+    workflow.add_edge("router_conversation", "router_history")
     workflow.add_edge("router_history", "end_point")
+    workflow.add_edge("summary_node", "save_ticket_tool")
+    workflow.add_edge("save_ticket_tool", "end_point")
+    workflow.add_edge("fire_agent", "end_point")
+    workflow.add_edge("medical_agent", "end_point")
     workflow.add_edge("end_point", END)
 
     # Compile
     app = workflow.compile(debug=False)
     logger.info("Conversation graph created")
+
+    plot = app.get_graph().draw_mermaid_png()
+    with open("RescueHub_AI_AgentSystem.png", "wb") as fp:
+        fp.write(plot)
 
     return app
