@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 import logging
 
 from RescueHub_AI_AgentSystem.prompts import (get_fire_emergency_prompt, get_medical_emergency_prompt,
@@ -14,7 +14,7 @@ class ConversationNode:
         self.runnable = llm_chain
         self.agent_name = agent_name
 
-    def __call__(self, state: State) -> Dict[str, str]:
+    def __call__(self, state: State) -> Dict[str, List[str]]:
         logger.debug({
             "message": f"The LLM is generating conversation response. {self.agent_name}",
             "state": state
@@ -26,18 +26,20 @@ class ConversationNode:
         })
 
         content = response.content.strip()
-        agent_name = None
+
+        agent_names = state.get("agent_name", [])
 
         if "[[agent_name:" in content:
             try:
                 agent_name = content.split("[[agent_name:")[1].split("]]")[0].strip()
                 content = content.replace(f"[[agent_name:{agent_name}]]", "").strip()
+                agent_names.append(agent_name)
             except Exception:
                 pass
 
         return {
             "answer": content,
-            "agent_name": agent_name
+            "agent_name": agent_names,
         }
 
 

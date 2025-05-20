@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     # Initialize history
     history: list[BaseMessage] = []
+    agent_names: list[str] = []
 
     print("💬 Fire Emergency Agent is ready! Type 'exit' to stop.\n")
 
@@ -36,6 +37,7 @@ if __name__ == "__main__":
         state = {
             "query": query,
             "chat_history": history,
+            "agent_name": agent_names,
         }
 
         # Invoke the LangGraph app
@@ -43,8 +45,12 @@ if __name__ == "__main__":
 
         # Print and update history
         answer = state["answer"]
-        print(f"🤖 Agent: {answer}\n")
+        agent_name = agent_names[-1] if agent_names else "router"
+
+        print(f"🤖 Agent ({agent_name}): {answer}\n")
 
         # Update history with new messages
         history.append(HumanMessage(content=query))
         history.append(AIMessage(content=answer))
+        agent_names.append(state["agent_name"][-1])
+
