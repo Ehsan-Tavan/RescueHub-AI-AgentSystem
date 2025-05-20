@@ -6,3 +6,4 @@ class State(TypedDict):
     query: str
     answer: str
     chat_history: List[BaseMessage]
+    agent_name: str

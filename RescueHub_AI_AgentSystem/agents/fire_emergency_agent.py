@@ -19,13 +19,13 @@ def create_fire_emergency_agent(model_config: Dict[str, str]):
     history_node = get_history_node()
 
     # Add nodes to workflow
-    workflow.add_node("conversation", conversation_node)
-    workflow.add_node("history", history_node)
+    workflow.add_node("fire_conversation", conversation_node)
+    workflow.add_node("fire_history", history_node)
 
     # Set edges
-    workflow.set_entry_point("conversation")
-    workflow.add_edge("conversation", "history")
-    workflow.add_edge("history", END)
+    workflow.set_entry_point("fire_conversation")
+    workflow.add_edge("fire_conversation", "fire_history")
+    workflow.add_edge("fire_history", END)
 
     # Compile
     app = workflow.compile(debug=False)

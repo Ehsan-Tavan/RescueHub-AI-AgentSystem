@@ -1,1 +1,1 @@
-from .prompts import get_fire_emergency_prompt, get_medical_emergency_prompt
+from .prompts import get_fire_emergency_prompt, get_medical_emergency_prompt, get_router_agent_prompt
